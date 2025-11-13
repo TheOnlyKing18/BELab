@@ -1,1 +1,1360 @@
-# BELab
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electronic Components Explorer</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav li {
+            margin-left: 1.5rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover, nav a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .component-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 1.5rem;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            color: var(--secondary);
+        }
+        
+        .component-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .control-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .visualization {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            min-height: 300px;
+        }
+        
+        .resistor {
+            width: 300px;
+            height: 80px;
+            background-color: #f0f0f0;
+            border-radius: 40px;
+            position: relative;
+            margin: 2rem 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .resistor-body {
+            width: 100%;
+            height: 100%;
+            background-color: #e0e0e0;
+            border-radius: 40px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .resistor-band {
+            position: absolute;
+            top: 0;
+            width: 12px;
+            height: 100%;
+            border-radius: 6px;
+        }
+        
+        .band-1 { left: 20%; }
+        .band-2 { left: 35%; }
+        .band-3 { left: 50%; }
+        .band-4 { left: 65%; }
+        
+        .resistor-lead {
+            position: absolute;
+            top: 50%;
+            width: 50px;
+            height: 4px;
+            background-color: #c0c0c0;
+        }
+        
+        .lead-left {
+            left: -50px;
+        }
+        
+        .lead-right {
+            right: -50px;
+        }
+        
+        .result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: var(--light);
+            border-radius: 4px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .result-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        .specs-table th, .specs-table td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        .specs-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .specs-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .color-code-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        .color-code-table th, .color-code-table td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: center;
+        }
+        
+        .color-code-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .color-code-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .color-swatch {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+        
+        .transistor {
+            width: 120px;
+            height: 160px;
+            position: relative;
+            margin: 2rem 0;
+        }
+        
+        .transistor-body {
+            width: 100%;
+            height: 80px;
+            background-color: #333;
+            border-radius: 10px 10px 0 0;
+            position: absolute;
+            top: 0;
+        }
+        
+        .transistor-lead {
+            position: absolute;
+            width: 4px;
+            background-color: #c0c0c0;
+        }
+        
+        .lead-base {
+            height: 80px;
+            left: 50%;
+            top: 80px;
+            transform: translateX(-50%);
+        }
+        
+        .lead-collector {
+            height: 60px;
+            left: 30%;
+            top: 80px;
+            transform: rotate(-30deg);
+            transform-origin: top;
+        }
+        
+        .lead-emitter {
+            height: 60px;
+            left: 70%;
+            top: 80px;
+            transform: rotate(30deg);
+            transform-origin: top;
+        }
+        
+        .tab {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--dark);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab-button.active {
+            border-bottom: 3px solid var(--secondary);
+            color: var(--secondary);
+            font-weight: 500;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .capacitor {
+            width: 120px;
+            height: 60px;
+            border: 2px solid #333;
+            border-radius: 5px;
+            position: relative;
+            margin: 2rem auto;
+        }
+        
+        .capacitor::before, .capacitor::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 2px;
+            background-color: #c0c0c0;
+            transform: translateY(-50%);
+        }
+        
+        .capacitor::before {
+            left: -20px;
+        }
+        
+        .capacitor::after {
+            right: -20px;
+        }
+        
+        .electrolytic {
+            background-color: #f0f0f0;
+        }
+        
+        .electrolytic::before {
+            content: '+';
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .diode {
+            width: 100px;
+            height: 40px;
+            position: relative;
+            margin: 2rem auto;
+        }
+        
+        .diode-body {
+            width: 40px;
+            height: 30px;
+            border: 2px solid #333;
+            border-radius: 5px;
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .diode::before, .diode::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30px;
+            height: 2px;
+            background-color: #c0c0c0;
+            transform: translateY(-50%);
+        }
+        
+        .diode::before {
+            left: 0;
+        }
+        
+        .diode::after {
+            right: 0;
+        }
+        
+        .diode-arrow {
+            position: absolute;
+            left: 40px;
+            top: 50%;
+            width: 20px;
+            height: 2px;
+            background-color: #333;
+            transform: translateY(-50%);
+        }
+        
+        .led-glow {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .component-info {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #e8f4fc;
+            border-radius: 4px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .component-info h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .component-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            nav li {
+                margin: 0.25rem;
+            }
+            
+            .tab {
+                justify-content: center;
+            }
+            
+            .tab-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                Electronics Lab
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#">Components</a></li>
+                    <li><a href="#">Calculators</a></li>
+                    <li><a href="#">Resources</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="component-section">
+            <h1>Electronic Components Explorer</h1>
+            <p>Select a component type to explore its properties, calculate values, and visualize the component with accurate specifications.</p>
+            
+            <div class="tab">
+                <button class="tab-button active" data-tab="resistor">Resistor</button>
+                <button class="tab-button" data-tab="capacitor">Capacitor</button>
+                <button class="tab-button" data-tab="diode">Diode</button>
+                <button class="tab-button" data-tab="transistor">Transistor</button>
+            </div>
+            
+            <!-- Resistor Tab -->
+            <div class="tab-content active" id="resistor-tab">
+                <h2>Resistor Color Code Calculator</h2>
+                <p>Select colors for each band to calculate the resistor value and tolerance with real specifications.</p>
+                
+                <div class="component-controls">
+                    <div class="controls">
+                        <div class="control-group">
+                            <label for="band1">Band 1 (1st Digit)</label>
+                            <select id="band1">
+                                <option value="0" style="background-color:black; color:white;">Black - 0</option>
+                                <option value="1" style="background-color:brown; color:white;">Brown - 1</option>
+                                <option value="2" style="background-color:red; color:white;">Red - 2</option>
+                                <option value="3" style="background-color:orange; color:white;">Orange - 3</option>
+                                <option value="4" style="background-color:yellow;">Yellow - 4</option>
+                                <option value="5" style="background-color:green; color:white;">Green - 5</option>
+                                <option value="6" style="background-color:blue; color:white;">Blue - 6</option>
+                                <option value="7" style="background-color:violet; color:white;">Violet - 7</option>
+                                <option value="8" style="background-color:gray; color:white;">Gray - 8</option>
+                                <option value="9" style="background-color:white;">White - 9</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="band2">Band 2 (2nd Digit)</label>
+                            <select id="band2">
+                                <option value="0" style="background-color:black; color:white;">Black - 0</option>
+                                <option value="1" style="background-color:brown; color:white;">Brown - 1</option>
+                                <option value="2" style="background-color:red; color:white;">Red - 2</option>
+                                <option value="3" style="background-color:orange; color:white;">Orange - 3</option>
+                                <option value="4" style="background-color:yellow;">Yellow - 4</option>
+                                <option value="5" style="background-color:green; color:white;">Green - 5</option>
+                                <option value="6" style="background-color:blue; color:white;">Blue - 6</option>
+                                <option value="7" style="background-color:violet; color:white;">Violet - 7</option>
+                                <option value="8" style="background-color:gray; color:white;">Gray - 8</option>
+                                <option value="9" style="background-color:white;">White - 9</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="band3">Band 3 (Multiplier)</label>
+                            <select id="band3">
+                                <option value="1" style="background-color:black; color:white;">Black - ×1</option>
+                                <option value="10" style="background-color:brown; color:white;">Brown - ×10</option>
+                                <option value="100" style="background-color:red; color:white;">Red - ×100</option>
+                                <option value="1000" style="background-color:orange; color:white;">Orange - ×1,000</option>
+                                <option value="10000" style="background-color:yellow;">Yellow - ×10,000</option>
+                                <option value="100000" style="background-color:green; color:white;">Green - ×100,000</option>
+                                <option value="1000000" style="background-color:blue; color:white;">Blue - ×1,000,000</option>
+                                <option value="10000000" style="background-color:violet; color:white;">Violet - ×10,000,000</option>
+                                <option value="0.1" style="background-color:gold; color:white;">Gold - ×0.1</option>
+                                <option value="0.01" style="background-color:silver;">Silver - ×0.01</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="band4">Band 4 (Tolerance)</label>
+                            <select id="band4">
+                                <option value="1" style="background-color:brown; color:white;">Brown - ±1%</option>
+                                <option value="2" style="background-color:red; color:white;">Red - ±2%</option>
+                                <option value="0.5" style="background-color:green; color:white;">Green - ±0.5%</option>
+                                <option value="0.25" style="background-color:blue; color:white;">Blue - ±0.25%</option>
+                                <option value="0.1" style="background-color:violet; color:white;">Violet - ±0.1%</option>
+                                <option value="5" style="background-color:gold; color:white;">Gold - ±5%</option>
+                                <option value="10" style="background-color:silver;">Silver - ±10%</option>
+                                <option value="20">None - ±20%</option>
+                            </select>
+                        </div>
+                        
+                        <button id="calculate-resistor">Calculate Value</button>
+                    </div>
+                    
+                    <div class="visualization">
+                        <h3>Resistor Visualization</h3>
+                        <div class="resistor">
+                            <div class="resistor-body"></div>
+                            <div class="resistor-band band-1" id="vis-band1"></div>
+                            <div class="resistor-band band-2" id="vis-band2"></div>
+                            <div class="resistor-band band-3" id="vis-band3"></div>
+                            <div class="resistor-band band-4" id="vis-band4"></div>
+                            <div class="resistor-lead lead-left"></div>
+                            <div class="resistor-lead lead-right"></div>
+                        </div>
+                        
+                        <div class="result">
+                            <p>Resistor Value:</p>
+                            <p class="result-value" id="resistor-value">Select colors to calculate</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="component-info">
+                    <h4>About Resistors</h4>
+                    <p>Resistors are passive electrical components that create resistance in the flow of electric current. They are used to reduce current flow, adjust signal levels, divide voltages, and terminate transmission lines. The most common type is the carbon film resistor with power ratings from 0.125W to 5W.</p>
+                </div>
+                
+                <h3>Resistor Color Code Reference</h3>
+                <table class="color-code-table">
+                    <thead>
+                        <tr>
+                            <th>Color</th>
+                            <th>Band 1 & 2</th>
+                            <th>Multiplier</th>
+                            <th>Tolerance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="color-swatch" style="background-color:black;"></span>Black</td>
+                            <td>0</td>
+                            <td>×1</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="color-swatch" style="background-color:brown;"></span>Brown</td>
+                            <td>1</td>
+                            <td>×10</td>
+                            <td>±1%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="color-swatch" style="background-color:red;"></span>Red</td>
+                            <td>2</td>
+                            <td>×100</td>
+                            <td>±2%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="color-swatch" style="background-color:orange;"></span>Orange</td>
+                            <td>3</td>
+                            <td>×1,000</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="color-swatch" style="background-color:yellow;"></span>Yellow</td>
+                            <td>4</td>
+                            <td>×10,000</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="color-swatch" style="background-color:green;"></span>Green</td>
+                            <td>5</td>
+                            <td>×100,000</td>
+                            <td>±0.5%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="color-swatch" style="background-color:blue;"></span>Blue</td>
+                            <td>6</td>
+                            <td>×1,000,000</td>
+                            <td>±0.25%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="color-swatch" style="background-color:violet;"></span>Violet</td>
+                            <td>7</td>
+                            <td>×10,000,000</td>
+                            <td>±0.1%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="color-swatch" style="background-color:gray;"></span>Gray</td>
+                            <td>8</td>
+                            <td>-</td>
+                            <td>±0.05%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="color-swatch" style="background-color:white;"></span>White</td>
+                            <td>9</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="color-swatch" style="background-color:gold;"></span>Gold</td>
+                            <td>-</td>
+                            <td>×0.1</td>
+                            <td>±5%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="color-swatch" style="background-color:silver;"></span>Silver</td>
+                            <td>-</td>
+                            <td>×0.01</td>
+                            <td>±10%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Capacitor Tab -->
+            <div class="tab-content" id="capacitor-tab">
+                <h2>Capacitor Value Calculator</h2>
+                <p>Calculate capacitor values based on the number code or select from common values with accurate specifications.</p>
+                
+                <div class="component-controls">
+                    <div class="controls">
+                        <div class="control-group">
+                            <label for="cap-code">Capacitor Code (3 digits)</label>
+                            <input type="text" id="cap-code" placeholder="e.g., 104" maxlength="3">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="cap-type">Capacitor Type</label>
+                            <select id="cap-type">
+                                <option value="ceramic">Ceramic (pF)</option>
+                                <option value="electrolytic">Electrolytic (μF)</option>
+                                <option value="film">Film (nF)</option>
+                                <option value="tantalum">Tantalum (μF)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="cap-voltage">Voltage Rating</label>
+                            <select id="cap-voltage">
+                                <option value="10">10V</option>
+                                <option value="16">16V</option>
+                                <option value="25">25V</option>
+                                <option value="50" selected>50V</option>
+                                <option value="100">100V</option>
+                                <option value="250">250V</option>
+                                <option value="400">400V</option>
+                            </select>
+                        </div>
+                        
+                        <button id="calculate-capacitor">Calculate Value</button>
+                    </div>
+                    
+                    <div class="visualization">
+                        <h3>Capacitor Visualization</h3>
+                        <div id="capacitor-vis">
+                            <!-- Capacitor visualization will be generated here -->
+                        </div>
+                        
+                        <div class="result">
+                            <p>Capacitor Value:</p>
+                            <p class="result-value" id="capacitor-value">Enter code to calculate</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="component-info">
+                    <h4>About Capacitors</h4>
+                    <p>Capacitors are passive electronic components that store electrical energy in an electric field. They consist of two conductive plates separated by a dielectric material. Common types include ceramic, electrolytic, film, and tantalum capacitors with capacitance values ranging from pF (picofarads) to mF (millifarads).</p>
+                </div>
+                
+                <h3>Common Capacitor Specifications</h3>
+                <table class="specs-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Capacitance Range</th>
+                            <th>Voltage Range</th>
+                            <th>Tolerance</th>
+                            <th>Applications</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ceramic</td>
+                            <td>1 pF - 100 μF</td>
+                            <td>10V - 6.3kV</td>
+                            <td>±5% to ±20%</td>
+                            <td>Decoupling, filtering, timing</td>
+                        </tr>
+                        <tr>
+                            <td>Electrolytic</td>
+                            <td>0.1 μF - 1 F</td>
+                            <td>6.3V - 500V</td>
+                            <td>±20%</td>
+                            <td>Power supply filtering</td>
+                        </tr>
+                        <tr>
+                            <td>Film</td>
+                            <td>100 pF - 100 μF</td>
+                            <td>50V - 2kV</td>
+                            <td>±1% to ±10%</td>
+                            <td>Audio circuits, snubbers</td>
+                        </tr>
+                        <tr>
+                            <td>Tantalum</td>
+                            <td>0.1 μF - 1000 μF</td>
+                            <td>2V - 50V</td>
+                            <td>±10% to ±20%</td>
+                            <td>Power supply bypass</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Diode Tab -->
+            <div class="tab-content" id="diode-tab">
+                <h2>Diode Properties</h2>
+                <p>Select a diode type to view its properties and specifications with accurate technical data.</p>
+                
+                <div class="component-controls">
+                    <div class="controls">
+                        <div class="control-group">
+                            <label for="diode-type">Diode Type</label>
+                            <select id="diode-type">
+                                <option value="1n4001">1N4001 (General Purpose)</option>
+                                <option value="1n4007">1N4007 (General Purpose)</option>
+                                <option value="1n4148">1N4148 (Switching)</option>
+                                <option value="1n5408">1N5408 (Power)</option>
+                                <option value="zener5v">Zener 5.1V</option>
+                                <option value="zener12v">Zener 12V</option>
+                                <option value="led-red">LED (Red)</option>
+                                <option value="led-green">LED (Green)</option>
+                                <option value="led-blue">LED (Blue)</option>
+                                <option value="led-white">LED (White)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="diode-test">Test Configuration</label>
+                            <select id="diode-test">
+                                <option value="forward">Forward Bias</option>
+                                <option value="reverse">Reverse Bias</option>
+                            </select>
+                        </div>
+                        
+                        <button id="show-diode-specs">Show Specifications</button>
+                    </div>
+                    
+                    <div class="visualization">
+                        <h3>Diode Visualization</h3>
+                        <div id="diode-vis">
+                            <!-- Diode visualization will be generated here -->
+                        </div>
+                        
+                        <div class="result">
+                            <p>Diode Properties:</p>
+                            <p class="result-value" id="diode-value">Select diode type</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="component-info">
+                    <h4>About Diodes</h4>
+                    <p>Diodes are semiconductor devices that allow current to flow in one direction only. Common types include rectifier diodes (1N400x series), switching diodes (1N4148), Zener diodes (voltage regulation), and LEDs (light emission). Diodes have a forward voltage drop (0.3V for germanium, 0.7V for silicon) and a maximum reverse voltage rating.</p>
+                </div>
+                
+                <h3>Diode Specifications</h3>
+                <table class="specs-table">
+                    <thead>
+                        <tr>
+                            <th>Diode Type</th>
+                            <th>Max Forward Current</th>
+                            <th>Peak Reverse Voltage</th>
+                            <th>Forward Voltage</th>
+                            <th>Applications</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1N4001</td>
+                            <td>1A</td>
+                            <td>50V</td>
+                            <td>0.7V</td>
+                            <td>General purpose rectification</td>
+                        </tr>
+                        <tr>
+                            <td>1N4007</td>
+                            <td>1A</td>
+                            <td>1000V</td>
+                            <td>0.7V</td>
+                            <td>High voltage rectification</td>
+                        </tr>
+                        <tr>
+                            <td>1N4148</td>
+                            <td>200mA</td>
+                            <td>75V</td>
+                            <td>0.7V</td>
+                            <td>Fast switching, signal processing</td>
+                        </tr>
+                        <tr>
+                            <td>1N5408</td>
+                            <td>3A</td>
+                            <td>1000V</td>
+                            <td>0.7V</td>
+                            <td>Power supply rectification</td>
+                        </tr>
+                        <tr>
+                            <td>Zener 5.1V</td>
+                            <td>500mA</td>
+                            <td>5.1V</td>
+                            <td>0.7V</td>
+                            <td>Voltage regulation</td>
+                        </tr>
+                        <tr>
+                            <td>LED Red</td>
+                            <td>20mA</td>
+                            <td>5V</td>
+                            <td>1.8-2.2V</td>
+                            <td>Indicators, displays</td>
+                        </tr>
+                        <tr>
+                            <td>LED Blue</td>
+                            <td>20mA</td>
+                            <td>5V</td>
+                            <td>3.0-3.4V</td>
+                            <td>Indicators, lighting</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Transistor Tab -->
+            <div class="tab-content" id="transistor-tab">
+                <h2>Transistor Properties</h2>
+                <p>Select a transistor type to view its properties and pin configuration with accurate specifications.</p>
+                
+                <div class="component-controls">
+                    <div class="controls">
+                        <div class="control-group">
+                            <label for="transistor-type">Transistor Type</label>
+                            <select id="transistor-type">
+                                <option value="bc548">BC548 (NPN General Purpose)</option>
+                                <option value="bc547">BC547 (NPN General Purpose)</option>
+                                <option value="2n2222">2N2222 (NPN Switching)</option>
+                                <option value="bc557">BC557 (PNP General Purpose)</option>
+                                <option value="2n3904">2N3904 (NPN General Purpose)</option>
+                                <option value="2n3906">2N3906 (PNP General Purpose)</option>
+                                <option value="tip31">TIP31 (NPN Power)</option>
+                                <option value="tip32">TIP32 (PNP Power)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="transistor-test">Test Configuration</label>
+                            <select id="transistor-test">
+                                <option value="npn">NPN Testing</option>
+                                <option value="pnp">PNP Testing</option>
+                            </select>
+                        </div>
+                        
+                        <button id="show-transistor-specs">Show Specifications</button>
+                    </div>
+                    
+                    <div class="visualization">
+                        <h3>Transistor Visualization</h3>
+                        <div class="transistor">
+                            <div class="transistor-body"></div>
+                            <div class="transistor-lead lead-base"></div>
+                            <div class="transistor-lead lead-collector"></div>
+                            <div class="transistor-lead lead-emitter"></div>
+                        </div>
+                        
+                        <div class="result">
+                            <p>Transistor Properties:</p>
+                            <p class="result-value" id="transistor-value">Select transistor type</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="component-info">
+                    <h4>About Transistors</h4>
+                    <p>Transistors are semiconductor devices used to amplify or switch electronic signals. Bipolar Junction Transistors (BJTs) come in two types: NPN and PNP. Key parameters include current gain (hFE), maximum collector current (IC), and maximum collector-emitter voltage (VCEO).</p>
+                </div>
+                
+                <h3>Transistor Specifications</h3>
+                <table class="specs-table">
+                    <thead>
+                        <tr>
+                            <th>Transistor</th>
+                            <th>Type</th>
+                            <th>Max IC</th>
+                            <th>Max VCEO</th>
+                            <th>Gain (hFE)</th>
+                            <th>Max Power</th>
+                            <th>Applications</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>BC548</td>
+                            <td>NPN</td>
+                            <td>100mA</td>
+                            <td>30V</td>
+                            <td>110-800</td>
+                            <td>500mW</td>
+                            <td>Low power amplification</td>
+                        </tr>
+                        <tr>
+                            <td>BC547</td>
+                            <td>NPN</td>
+                            <td>100mA</td>
+                            <td>45V</td>
+                            <td>110-800</td>
+                            <td>500mW</td>
+                            <td>General purpose amplification</td>
+                        </tr>
+                        <tr>
+                            <td>2N2222</td>
+                            <td>NPN</td>
+                            <td>800mA</td>
+                            <td>30V</td>
+                            <td>100-300</td>
+                            <td>500mW</td>
+                            <td>Switching, amplification</td>
+                        </tr>
+                        <tr>
+                            <td>BC557</td>
+                            <td>PNP</td>
+                            <td>100mA</td>
+                            <td>45V</td>
+                            <td>125-800</td>
+                            <td>500mW</td>
+                            <td>Low power amplification</td>
+                        </tr>
+                        <tr>
+                            <td>2N3904</td>
+                            <td>NPN</td>
+                            <td>200mA</td>
+                            <td>40V</td>
+                            <td>100-300</td>
+                            <td>625mW</td>
+                            <td>General purpose amplification</td>
+                        </tr>
+                        <tr>
+                            <td>2N3906</td>
+                            <td>PNP</td>
+                            <td>200mA</td>
+                            <td>40V</td>
+                            <td>100-300</td>
+                            <td>625mW</td>
+                            <td>General purpose amplification</td>
+                        </tr>
+                        <tr>
+                            <td>TIP31</td>
+                            <td>NPN</td>
+                            <td>3A</td>
+                            <td>40V</td>
+                            <td>10-50</td>
+                            <td>40W</td>
+                            <td>Power amplification</td>
+                        </tr>
+                        <tr>
+                            <td>TIP32</td>
+                            <td>PNP</td>
+                            <td>3A</td>
+                            <td>40V</td>
+                            <td>10-50</td>
+                            <td>40W</td>
+                            <td>Power amplification</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Electronic Components Explorer &copy; 2023 | Based on Tech Lab Experiment 1 | All specifications are based on actual component datasheets</p>
+    </footer>
+
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and contents
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                const tabId = button.getAttribute('data-tab') + '-tab';
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Resistor calculation functionality
+        document.getElementById('calculate-resistor').addEventListener('click', calculateResistor);
+        
+        // Initialize resistor visualization with default colors
+        updateResistorVisualization();
+        
+        // Add event listeners to resistor band selects to update visualization in real-time
+        document.querySelectorAll('#band1, #band2, #band3, #band4').forEach(select => {
+            select.addEventListener('change', updateResistorVisualization);
+        });
+        
+        function updateResistorVisualization() {
+            const band1 = document.getElementById('band1');
+            const band2 = document.getElementById('band2');
+            const band3 = document.getElementById('band3');
+            const band4 = document.getElementById('band4');
+            
+            document.getElementById('vis-band1').style.backgroundColor = getColorFromOption(band1);
+            document.getElementById('vis-band2').style.backgroundColor = getColorFromOption(band2);
+            document.getElementById('vis-band3').style.backgroundColor = getColorFromOption(band3);
+            document.getElementById('vis-band4').style.backgroundColor = getColorFromOption(band4);
+        }
+        
+        function getColorFromOption(selectElement) {
+            const text = selectElement.options[selectElement.selectedIndex].text;
+            const colorMatch = text.match(/^([a-zA-Z]+)/);
+            return colorMatch ? colorMatch[1].toLowerCase() : 'gray';
+        }
+        
+        function calculateResistor() {
+            const band1 = parseInt(document.getElementById('band1').value);
+            const band2 = parseInt(document.getElementById('band2').value);
+            const band3 = parseFloat(document.getElementById('band3').value);
+            const band4 = parseFloat(document.getElementById('band4').value);
+            
+            const value = (band1 * 10 + band2) * band3;
+            let displayValue;
+            
+            if (value >= 1000000) {
+                displayValue = (value / 1000000).toFixed(2) + ' MΩ';
+            } else if (value >= 1000) {
+                displayValue = (value / 1000).toFixed(2) + ' kΩ';
+            } else {
+                displayValue = value + ' Ω';
+            }
+            
+            document.getElementById('resistor-value').textContent = `${displayValue} ±${band4}%`;
+        }
+        
+        // Capacitor calculation functionality
+        document.getElementById('calculate-capacitor').addEventListener('click', calculateCapacitor);
+        
+        function calculateCapacitor() {
+            const code = document.getElementById('cap-code').value;
+            const type = document.getElementById('cap-type').value;
+            const voltage = document.getElementById('cap-voltage').value;
+            
+            if (code.length === 3 && !isNaN(code)) {
+                const firstDigit = parseInt(code[0]);
+                const secondDigit = parseInt(code[1]);
+                const multiplier = Math.pow(10, parseInt(code[2]));
+                
+                let value = firstDigit * 10 + secondDigit;
+                value *= multiplier;
+                
+                let unit = 'pF';
+                let displayValue = value;
+                
+                if (value >= 1000) {
+                    displayValue = value / 1000;
+                    unit = 'nF';
+                    
+                    if (displayValue >= 1000) {
+                        displayValue = displayValue / 1000;
+                        unit = 'μF';
+                    }
+                }
+                
+                document.getElementById('capacitor-value').textContent = 
+                    `${displayValue} ${unit}, ${voltage}V`;
+                    
+                // Update visualization
+                const capVis = document.getElementById('capacitor-vis');
+                capVis.innerHTML = '';
+                
+                const capElement = document.createElement('div');
+                capElement.className = type === 'electrolytic' || type === 'tantalum' ? 'capacitor electrolytic' : 'capacitor';
+                
+                capVis.appendChild(capElement);
+                
+            } else {
+                document.getElementById('capacitor-value').textContent = 'Invalid code. Use 3 digits (e.g., 104 for 100nF)';
+            }
+        }
+        
+        // Diode functionality
+        document.getElementById('show-diode-specs').addEventListener('click', showDiodeSpecs);
+        
+        function showDiodeSpecs() {
+            const diodeType = document.getElementById('diode-type').value;
+            const testConfig = document.getElementById('diode-test').value;
+            
+            let specs = '';
+            let color = '';
+            let isLED = false;
+            let isZener = false;
+            
+            switch(diodeType) {
+                case '1n4001':
+                    specs = 'Type: General Purpose Rectifier | Max Forward Current: 1A | Peak Reverse Voltage: 50V | Forward Voltage: 0.7V | Package: DO-41';
+                    color = 'black';
+                    break;
+                case '1n4007':
+                    specs = 'Type: General Purpose Rectifier | Max Forward Current: 1A | Peak Reverse Voltage: 1000V | Forward Voltage: 0.7V | Package: DO-41';
+                    color = 'black';
+                    break;
+                case '1n4148':
+                    specs = 'Type: Fast Switching | Max Forward Current: 200mA | Peak Reverse Voltage: 75V | Forward Voltage: 0.7V | Reverse Recovery Time: 4ns | Package: DO-35';
+                    color = 'black';
+                    break;
+                case '1n5408':
+                    specs = 'Type: Power Rectifier | Max Forward Current: 3A | Peak Reverse Voltage: 1000V | Forward Voltage: 0.7V | Package: DO-201AD';
+                    color = 'black';
+                    break;
+                case 'zener5v':
+                    specs = 'Type: Zener Voltage Regulator | Zener Voltage: 5.1V | Max Power: 1W | Forward Voltage: 0.7V | Tolerance: ±5% | Package: DO-41';
+                    color = 'blue';
+                    isZener = true;
+                    break;
+                case 'zener12v':
+                    specs = 'Type: Zener Voltage Regulator | Zener Voltage: 12V | Max Power: 1W | Forward Voltage: 0.7V | Tolerance: ±5% | Package: DO-41';
+                    color = 'blue';
+                    isZener = true;
+                    break;
+                case 'led-red':
+                    specs = 'Type: Light Emitting Diode | Color: Red | Forward Voltage: 1.8-2.2V | Max Current: 20mA | Wavelength: 620-625nm | Luminous Intensity: 20-40mcd';
+                    color = 'red';
+                    isLED = true;
+                    break;
+                case 'led-green':
+                    specs = 'Type: Light Emitting Diode | Color: Green | Forward Voltage: 2.0-2.4V | Max Current: 20mA | Wavelength: 515-530nm | Luminous Intensity: 30-60mcd';
+                    color = 'green';
+                    isLED = true;
+                    break;
+                case 'led-blue':
+                    specs = 'Type: Light Emitting Diode | Color: Blue | Forward Voltage: 3.0-3.4V | Max Current: 20mA | Wavelength: 460-470nm | Luminous Intensity: 20-40mcd';
+                    color = 'blue';
+                    isLED = true;
+                    break;
+                case 'led-white':
+                    specs = 'Type: Light Emitting Diode | Color: White | Forward Voltage: 3.0-3.4V | Max Current: 20mA | Color Temperature: 6000-8000K | Luminous Intensity: 30-50mcd';
+                    color = 'white';
+                    isLED = true;
+                    break;
+            }
+            
+            document.getElementById('diode-value').textContent = specs;
+            
+            // Update visualization
+            const diodeVis = document.getElementById('diode-vis');
+            diodeVis.innerHTML = '';
+            
+            const diodeElement = document.createElement('div');
+            diodeElement.className = 'diode';
+            
+            const body = document.createElement('div');
+            body.className = 'diode-body';
+            body.style.backgroundColor = color;
+            
+            // Add Zener marking if it's a Zener diode
+            if (isZener) {
+                const zenerMark = document.createElement('div');
+                zenerMark.style.position = 'absolute';
+                zenerMark.style.left = '45px';
+                zenerMark.style.top = '50%';
+                zenerMark.style.transform = 'translateY(-50%)';
+                zenerMark.style.fontSize = '12px';
+                zenerMark.style.fontWeight = 'bold';
+                zenerMark.textContent = 'Z';
+                body.appendChild(zenerMark);
+            }
+            
+            const arrow = document.createElement('div');
+            arrow.className = 'diode-arrow';
+            
+            diodeElement.appendChild(body);
+            diodeElement.appendChild(arrow);
+            
+            // For LEDs, add a light emission effect
+            if (isLED) {
+                const glow = document.createElement('div');
+                glow.className = 'led-glow';
+                glow.style.backgroundColor = color;
+                glow.style.boxShadow = `0 0 20px ${color}`;
+                diodeVis.appendChild(glow);
+            }
+            
+            diodeVis.appendChild(diodeElement);
+        }
+        
+        // Transistor functionality
+        document.getElementById('show-transistor-specs').addEventListener('click', showTransistorSpecs);
+        
+        function showTransistorSpecs() {
+            const transistorType = document.getElementById('transistor-type').value;
+            const testConfig = document.getElementById('transistor-test').value;
+            
+            let specs = '';
+            
+            switch(transistorType) {
+                case 'bc548':
+                    specs = 'Type: NPN BJT | Max Collector Current: 100mA | Max VCEO: 30V | Current Gain (hFE): 110-800 | Max Power: 500mW | Package: TO-92';
+                    break;
+                case 'bc547':
+                    specs = 'Type: NPN BJT | Max Collector Current: 100mA | Max VCEO: 45V | Current Gain (hFE): 110-800 | Max Power: 500mW | Package: TO-92';
+                    break;
+                case '2n2222':
+                    specs = 'Type: NPN BJT | Max Collector Current: 800mA | Max VCEO: 30V | Current Gain (hFE): 100-300 | Max Power: 500mW | Package: TO-18';
+                    break;
+                case 'bc557':
+                    specs = 'Type: PNP BJT | Max Collector Current: 100mA | Max VCEO: 45V | Current Gain (hFE): 125-800 | Max Power: 500mW | Package: TO-92';
+                    break;
+                case '2n3904':
+                    specs = 'Type: NPN BJT | Max Collector Current: 200mA | Max VCEO: 40V | Current Gain (hFE): 100-300 | Max Power: 625mW | Package: TO-92';
+                    break;
+                case '2n3906':
+                    specs = 'Type: PNP BJT | Max Collector Current: 200mA | Max VCEO: 40V | Current Gain (hFE): 100-300 | Max Power: 625mW | Package: TO-92';
+                    break;
+                case 'tip31':
+                    specs = 'Type: NPN Power BJT | Max Collector Current: 3A | Max VCEO: 40V | Current Gain (hFE): 10-50 | Max Power: 40W | Package: TO-220';
+                    break;
+                case 'tip32':
+                    specs = 'Type: PNP Power BJT | Max Collector Current: 3A | Max VCEO: 40V | Current Gain (hFE): 10-50 | Max Power: 40W | Package: TO-220';
+                    break;
+            }
+            
+            document.getElementById('transistor-value').textContent = specs;
+        }
+        
+        // Initialize the page with some default values
+        window.addEventListener('DOMContentLoaded', (event) => {
+            calculateResistor();
+            showDiodeSpecs();
+            showTransistorSpecs();
+        });
+    </script>
+</body>
+</html>
